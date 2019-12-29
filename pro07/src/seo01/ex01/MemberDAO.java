@@ -52,11 +52,11 @@ public class MemberDAO {
 	public void connDB() {
 		try {
 			Class.forName(driver);
-			System.out.println("Oracle 靛扼捞滚 肺爹 己傍");
+			System.out.println("Oracle 霌滊澕鞚措矂 搿滊敥 靹标车");
 			con = DriverManager.getConnection(url,user,pwd);
-			System.out.println("Connection 积己 己傍");
+			System.out.println("Connection 靸濎劚靹标车");
 			stmt = con.createStatement();
-			System.out.println("Statement 积己 己傍");
+			System.out.println("Statement 靸濎劚靹标车");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
