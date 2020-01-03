@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet("/second")
+//@WebServlet("/second")
 public class SecondServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -21,7 +21,7 @@ public class SecondServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		out.println("<html><body>");
-		out.println("location¸¦ ÀÌ¿ëÇÑ redirect ½Ç½ÀÀÔ´Ï´Ù.");
+		out.println("locationï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ redirect ï¿½Ç½ï¿½ï¿½Ô´Ï´ï¿½.");
 		out.println("</body></html>");
 	}
 
