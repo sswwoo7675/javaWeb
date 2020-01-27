@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	window.onload = pageLoad;
+
+	function pageLoad() {
+		isNoShowPopUp = getCookieValue();
+		if(isNoShowPopUp != "true") {
+			window.open("popUp.html","pop","width=400, height=500, history=no, resizable=no, status=no, scrollbars=yes, menubar=no");
+		}
+	}
+
+	function getCookieValue() {
+		var result = "false";
+
+		if(document.cookie != ""){
+			var cookies = document.cookie.split(";");
+			for(var i=0; i<cookies.length; i++){
+				var elements = cookies[i].split("=");
+				if(elements[0] == "notShowPop") {
+					result = elements[1];
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
+	function deleteCookie() {
+		document.cookie = "notShowPop=false;path=/;expires=-1"
+	}
+</script>
+</head>
+<body>
+	<form>
+		<input type='button' value='쿠키삭제' onclick="deleteCookie()" />
+	</form>
+</body>
+</html>
