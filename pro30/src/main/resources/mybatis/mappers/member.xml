@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="mapper.member">
+	<resultMap type="memberVO" id="memResult">
+		<result property="id" column="id" />
+		<result property="pwd" column="pwd" />
+		<result property="name" column="name" />
+		<result property="email" column="email" />
+		<result property="joinDate" column="joinDate" />
+	</resultMap>
+	
+<!-- 	<resultMap type="java.util.HashMap" id="memResult">
+		<result property="id" column="id" />
+		<result property="pwd" column="pwd" />
+		<result property="name" column="name" />
+		<result property="email" column="email" />
+		<result property="joinDate" column="joinDate" />
+	</resultMap> -->
+	
+	<sql id="a">
+		<![CDATA[
+			SELECT * FROM t_member;
+		]]>
+	</sql>
+	
+	<select id="selectAllMemberList" resultMap="memResult">
+		<![CDATA[
+			SELECT * FROM t_member ORDER BY joinDate DESC
+		]]>
+	</select>
+	
+	<select id="selectName" resultType="String">
+		<![CDATA[
+			SELECT name FROM t_member WHERE id = 'hong'
+		]]>
+	</select>
+	
+	<select id="selectPwd" resultType="String">
+		<![CDATA[
+			SELECT pwd FROM t_member WHERE id = 'hong'
+		]]>
+	</select>
+	
+	<select id="selectMemberById" resultType="memberVO" parameterType="String">
+		<![CDATA[
+			SELECT * FROM t_member WHERE id = #{id}
+		]]>
+	</select>
+	
+	<select id="selectMemberByPwd" resultMap="memResult" parameterType="String">
+		<![CDATA[
+			SELECT * FROM t_member WHERE pwd = #{pwd}
+		]]>
+	</select>
+	
+	<insert id="insertMember" parameterType="memberVO">
+		<![CDATA[
+			INSERT INTO t_member(id,pwd,name,email) VALUES(#{id}, #{pwd}, #{name}, #{email})
+		]]>
+	</insert>
+	
+	<insert id="insertMember2" parameterType="java.util.Map">
+		<![CDATA[
+			INSERT INTO t_member(id,pwd,name,email) VALUES(#{id}, #{pwd}, #{name}, #{email})
+		]]>
+	</insert>
+	
+	<update id="updateMember" parameterType="memberVO">
+		<![CDATA[
+			UPDATE t_member
+			SET pwd=#{pwd}, name=#{name}, email=#{email}
+			WHERE id=#{id}
+		]]>
+	</update>
+	
+	<delete id="deleteMember" parameterType="String">
+		<![CDATA[
+			DELETE FROM t_member
+			WHERE id=#{id}
+		]]>
+	</delete>
+	
+	<select id="loginById" resultType="memberVO" parameterType="memberVO">
+		<![CDATA[
+			select * from t_member
+			where id=#{id} and pwd=#{pwd}
+		]]>
+	</select>
+	
+<!-- 	<select id="searchMember" parameterType="memberVO" resultMap="memResult">
+		<![CDATA[
+			SELECT * FROM t_member
+		]]>
+		<where>
+			<if test="name != '' and name != null">
+				name=#{name}
+			</if>
+			<if test="email != '' and email != null">
+				and email=#{email}
+			</if>
+		</where>
+	</select> -->
+	
+	<select id="searchMember" parameterType="memberVO" resultMap="memResult">
+		<include refid="a" />
+		<where>
+			<choose>
+				<when test="name != '' and name != null and email != '' and email !=null">
+					name=#{name} and email=#{email}
+				</when>
+				<when test="name !='' and name != null">
+					name=#{name}
+				</when>
+				<when test="email != '' and email != null">
+					email=#{email}
+				</when>
+			</choose>
+		</where>
+		ORDER BY joinDate DESC
+	</select>
+	
+	<select id="foreachSelect" resultMap="memResult" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT * FROM t_member
+			WHERE name IN
+		]]>
+		<foreach item="item" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		ORDER BY joinDate DESC
+	</select>
+	
+	<insert id="foreachInsert" parameterType="java.util.Map">
+		<foreach item="item" collection="list" open="INSERT ALL" separator=" " close="SELECT * FROM DUAL">
+			INTO t_member(id, pwd, name, email)
+			VALUES(#{item.id}, #{item.pwd}, #{item.name}, #{item.email})
+		</foreach>
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>
