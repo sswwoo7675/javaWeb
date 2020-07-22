@@ -9,4 +9,4 @@ import org.springframework.web.servlet.ModelAndView;
 public interface BoardController {
 	public ModelAndView listArticles(@RequestParam(value = "section", required = false) String _section,
 			@RequestParam(value = "pageNum", required = false) String _pageNum) throws Exception;
-}
+	}

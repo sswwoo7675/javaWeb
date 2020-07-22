@@ -44,5 +44,10 @@ public class BoardControllerImpl implements BoardController {
 		mav.addObject("articlesMap", articlesMap);
 		return mav;
 	}
+	
+	@RequestMapping(value="/board/*Form.do", method=RequestMethod.GET)
+	private ModelAndView form(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return new ModelAndView((String)request.getAttribute("viewName"));
+	}
 
 }

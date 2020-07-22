@@ -9,11 +9,15 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -28,7 +32,6 @@ public class MemberControllerImpl implements MemberController {
 	private MemberVO memberVO;
 	private static final Logger logger = LoggerFactory.getLogger(MemberControllerImpl.class);
 
-	
 	@RequestMapping(value = { "/", "/main.do" }, method = RequestMethod.GET)
 	private ModelAndView main(HttpServletRequest request, HttpServletResponse response) {
 		return new ModelAndView("main");
@@ -59,27 +62,56 @@ public class MemberControllerImpl implements MemberController {
 
 	@Override
 	@RequestMapping(value = "/member/*Form.do", method = RequestMethod.GET)
-	public ModelAndView form(@RequestParam(value = "result", required = false) String result,
+	public ModelAndView form(@RequestParam(value = "action", required = false) String action,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return new ModelAndView(getViewName(request)).addObject("result", result);
+
+		String viewName = (String) request.getAttribute("viewName");
+		HttpSession session = request.getSession();
+		session.setAttribute("action", action);
+		ModelAndView mav = new ModelAndView(viewName);
+		return mav;
 	}
 
 	@Override
 	@RequestMapping(value = "/member/login.do", method = RequestMethod.POST)
-	public ModelAndView login(@ModelAttribute("member") MemberVO member, RedirectAttributes rAttr,
+	@ResponseBody
+	public ResponseEntity login(@ModelAttribute("member") MemberVO member, RedirectAttributes rAttr,
 			HttpServletRequest request) throws Exception {
-		ModelAndView mav = new ModelAndView();
+
 		memberVO = memberService.login(member);
+		
+		String message = "";
+		HttpHeaders resHeader = new HttpHeaders();
+		resHeader.add("Content-Type", "text/html; charset=utf-8");
+		
 		if (memberVO != null) {
 			HttpSession session = request.getSession();
+			
 			session.setAttribute("member", memberVO);
 			session.setAttribute("isLogOn", true);
-			mav.setViewName("redirect:/member/listMembers.do");
+			
+			String action = (String) session.getAttribute("action");
+			session.removeAttribute("action");
+			
+			String url = "";
+			if (action != null) { // 다른곳에서 로그인이 유도
+				url = request.getContextPath() + action;
+			} else {
+				url = request.getContextPath() + "/main.do";
+			}
+			message = "<script>";
+			message += "alert('로그인에 성공하였습니다.');";
+			message += "location.href='" + url + "';";
+			message += "</script>";
 		} else {
-			rAttr.addAttribute("result", "loginFailed");
-			mav.setViewName("redirect:/member/loginForm.do");
+			message = "<script>";
+			message += "alert('로그인에 실패하였습니다. 아이디나 비밀번호를 확인하세요.');";
+			message += "location.href='" + request.getContextPath() + "/member/loginForm.do';";
+			message += "</script>";
 		}
-		return mav;
+
+		return new ResponseEntity(message, resHeader, HttpStatus.OK);
+
 	}
 
 	@RequestMapping(value = "/member/logout.do", method = RequestMethod.GET)
@@ -88,37 +120,6 @@ public class MemberControllerImpl implements MemberController {
 		session.removeAttribute("member");
 		session.removeAttribute("isLogOn");
 		return new ModelAndView("redirect:/member/listMembers.do");
-	}
-
-	private String getViewName(HttpServletRequest request) throws Exception {
-		String contextPath = request.getContextPath();
-		String uri = (String) request.getAttribute("javax.servlet.include.request_uri");
-		if (uri == null || uri.trim().equals("")) {
-			uri = request.getRequestURI();
-		}
-
-		int begin = 0;
-		if (!((contextPath == null) || ("".equals(contextPath)))) {
-			begin = contextPath.length();
-		}
-
-		int end;
-		if (uri.indexOf(";") != -1) {
-			end = uri.indexOf(";");
-		} else if (uri.indexOf("?") != -1) {
-			end = uri.indexOf("?");
-		} else {
-			end = uri.length();
-		}
-
-		String viewName = uri.substring(begin, end);
-		if (viewName.indexOf(".") != -1) {
-			viewName = viewName.substring(0, viewName.lastIndexOf("."));
-		}
-		if (viewName.lastIndexOf("/") != -1) {
-			viewName = viewName.substring(viewName.lastIndexOf("/", 1), viewName.length());
-		}
-		return viewName;
 	}
 
 }

@@ -11,15 +11,6 @@
 <title>로그인창</title>
 </head>
 <body>
-<c:choose>
-	<c:when test="${result=='loginFailed'}">
-		<script>
-			window.onload=function(){
-				alert("아이디나 비밀번호가 틀립니다. 다시 로그인 하세요!");
-			}
-		</script>
-	</c:when>
-</c:choose>
 	<form name="frmLogin" method="post" action="${contextPath}/member/login.do">
 		<table border="1" width="80%" align="center">
 			<tr align="center">
