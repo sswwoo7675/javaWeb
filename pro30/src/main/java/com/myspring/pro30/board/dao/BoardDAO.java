@@ -10,4 +10,6 @@ import com.myspring.pro30.board.vo.ArticleVO;
 public interface BoardDAO {
 	public List<ArticleVO> selectAllArticlesList(Map<String, Integer> pagingMap) throws DataAccessException;
 	public int selectTotArticles() throws DataAccessException;
+	public int insertNewArticle(Map articleMap) throws DataAccessException;
+	public int selectNewArticleNO() throws DataAccessException;
 }
