@@ -75,28 +75,10 @@ public class ArticleVO {
 	}
 
 	public String getImageFileName() {
-		String rtnImageFileName = "";
-		if (this.imageFileName != null) {
-			try {
-				rtnImageFileName = URLDecoder.decode(imageFileName, "UTF-8");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return rtnImageFileName;
-		} else {
-			return imageFileName;
-		}
+		return imageFileName;
 	}
 
 	public void setImageFileName(String imageFileName) {
-		if (imageFileName != null) {
-			try {
-				this.imageFileName = URLEncoder.encode(imageFileName, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			return;
-		}
 		this.imageFileName = imageFileName;
 	}
 

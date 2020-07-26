@@ -122,8 +122,9 @@ public class BoardControllerImpl implements BoardController {
 	
 	@Override
 	@RequestMapping(value="/board/viewArticle.do", method=RequestMethod.GET)
-	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO, HttpServletRequest request) {
-		
+	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO, HttpServletRequest request) throws Exception{
+		articleVO = boardService.viewArticle(articleNO);
+		return new ModelAndView("/board/viewArticle").addObject("article",articleVO);
 	}
 
 	private String upload(MultipartHttpServletRequest multipartRequest) throws Exception {

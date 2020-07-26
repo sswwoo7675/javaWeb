@@ -10,5 +10,5 @@ public interface BoardController {
 	public ModelAndView listArticles(@RequestParam(value = "section", required = false) String _section,
 			@RequestParam(value = "pageNum", required = false) String _pageNum) throws Exception;
 
-	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO, HttpServletRequest request);
+	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO, HttpServletRequest request) throws Exception;
 }

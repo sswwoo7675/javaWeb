@@ -12,4 +12,5 @@ public interface BoardDAO {
 	public int selectTotArticles() throws DataAccessException;
 	public int insertNewArticle(Map articleMap) throws DataAccessException;
 	public int selectNewArticleNO() throws DataAccessException;
+	public ArticleVO selectArticle(int articleNO) throws DataAccessException;
 }

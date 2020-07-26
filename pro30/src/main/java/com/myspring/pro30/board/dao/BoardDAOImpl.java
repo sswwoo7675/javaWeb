@@ -39,4 +39,9 @@ public class BoardDAOImpl implements BoardDAO {
 	public int selectNewArticleNO() throws DataAccessException{
 		return sqlSession.selectOne("mapper.board.selectNewArticleNO");
 	}
+	
+	@Override
+	public ArticleVO selectArticle(int articleNO) throws DataAccessException{
+		return sqlSession.selectOne("mapper.board.selectArticle",articleNO);
+	}
 }
