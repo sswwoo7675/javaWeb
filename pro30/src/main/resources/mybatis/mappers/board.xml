@@ -55,6 +55,25 @@
 		]]>
 	</select>
 	
+	<update id="updateArticle" parameterType="java.util.Map">
+		UPDATE t_board
+		SET title=#{title}, content=#{content}
+		<if test="imageFileName!='' and imageFileName!=null">
+			, imageFileName=#{imageFileName}
+		</if>
+		WHERE articleNO=#{articleNO}
+	</update>
+	
+	<delete id="deleteArticle" parameterType="int">
+	<![CDATA[
+		DELETE FROM t_board
+		WHERE articleNO IN (
+			SELECT articleNO FROM t_board
+			START WITH articleNO = #{articleNO}
+			CONNECT BY PRIOR articleNO = parentNO
+		)
+	]]>
+	</delete>
 </mapper>
 
 

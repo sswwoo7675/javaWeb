@@ -14,6 +14,12 @@
 	#tr_btn_modify{
 		display:none;
     }
+    #tr_file_upload{
+    	display:none;
+    }
+    #tr_file_upload_button{
+    	display:none;
+    }
 </style>
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script> 
 <script type="text/javascript">
@@ -22,11 +28,13 @@
 	    obj.submit();
 	}
 	
-	function fn_enable(obj){
+	function fn_enable(obj,isEmptyImg){
 		document.getElementById("i_title").disabled=false;
 		document.getElementById("i_content").disabled=false;
-		if(document.getElementById("i_imageFileName")){
-			document.getElementById("i_imageFileName").disabled=false;	
+		document.getElementById("i_imageFileName").disabled=false;
+		if(isEmptyImg){
+			document.getElementById("tr_file_upload").style.display="table-row";
+			document.getElementById("tr_file_upload_button").style.display="table-row";
 		}
 		document.getElementById("tr_btn_modify").style.display="block";
 		document.getElementById("tr_btn").style.display="none";
@@ -104,20 +112,35 @@
     				<textarea rows="20" cols="60" name="content" id="i_content" disabled>${article.content }</textarea>
    				</td> 
 			</tr>
-		<c:if test="${not empty article.imageFileName && article.imageFileName!='null'}">
-			<tr>
-				<td width="20%" align="center" bgcolor="#FF9933" rowspan="2">이미지</td>
-				<td align="left">
-					<input type="hidden" name="originalFileName" value="${article.imageFileName}" />
-					<img width="300" height="300" src="${contextPath}/download.do?imageFileName=${article.imageFileName}&articleNO=${article.articleNO}" id="preview" /><br/>
-				</td>
-			</tr>
-			<tr>
-				<td align="left">
-					<input type="file" name="imageFileName" id="i_imageFileName" disabled onchange="readURL(this);" />
-				</td>
-			</tr>
-		</c:if>
+		<c:choose>
+			<c:when test="${not empty article.imageFileName && article.imageFileName!='null'}">
+				<tr>
+					<td width="20%" align="center" bgcolor="#FF9933" rowspan="2">이미지</td>
+					<td align="left">
+						<input type="hidden" name="originalFileName" value="${article.imageFileName}" />
+						<img width="300" height="300" src="${contextPath}/download.do?imageFileName=${article.imageFileName}&articleNO=${article.articleNO}" id="preview" /><br/>
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						<input type="file" name="imageFileName" id="i_imageFileName" disabled onchange="readURL(this);" />
+					</td>
+				</tr>
+			</c:when>
+			<c:otherwise>
+				<tr id="tr_file_upload">
+					<td width="20%" align="center" bgcolor="#FF9933" rowspan="2">이미지</td>
+					<td align="left">
+						<img width="300" height="300" id="preview" />
+					</td>
+				</tr>
+				<tr id="tr_file_upload_button">
+					<td align="left">
+						<input type="file" name="imageFileName" id="i_imageFileName" disabled onchange="readURL(this);" />
+					</td>
+				</tr>
+			</c:otherwise>
+		</c:choose>
 			<tr>
 				<td width="20%" align="center" bgcolor="#FF9933">등록일자</td>
 				<td align="left">
@@ -133,7 +156,7 @@
 			<tr id="tr_btn">
 				<td colspan="2" align="center">
 					<c:if test="${member.id==article.id}">
-						<input type=button value="수정하기" onClick="fn_enable(this.form);">
+						<input type=button value="수정하기" onClick="fn_enable(this.form, ${empty article.imageFileName});">
 	  					<input type=button value="삭제하기" onClick="fn_remove_article('${contextPath}/board/removeArticle.do', ${article.articleNO});">
 					</c:if>
 					<input type=button value="리스트로 돌아가기"  onClick="backToList(this.form);">
